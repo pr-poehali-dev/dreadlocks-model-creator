@@ -5,6 +5,8 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import Model3D from '@/components/Model3D';
 
 const colorPalette = [
   { name: 'Огненный', value: '#FF6B35' },
@@ -29,6 +31,7 @@ const Index = () => {
   const [selectedColor, setSelectedColor] = useState('#FF6B35');
   const [length, setLength] = useState([50]);
   const [dreadType, setDreadType] = useState('classic');
+  const [gender, setGender] = useState<'male' | 'female'>('female');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-pink-50">
@@ -44,41 +47,16 @@ const Index = () => {
 
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           <Card className="p-8 bg-white/80 backdrop-blur-sm shadow-xl animate-scale-in border-2 hover:shadow-2xl transition-shadow duration-300">
-            <div className="aspect-square bg-gradient-to-br from-orange-100 via-pink-100 to-purple-100 rounded-2xl flex items-center justify-center relative overflow-hidden p-8 border-4 border-transparent bg-clip-padding"
-              style={{
-                borderImage: 'linear-gradient(135deg, #FF6B35, #F7931E, #C71585, #10B981) 1',
-              }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-200/20 via-pink-200/20 to-purple-200/20 animate-gradient-shift bg-[length:200%_200%]" />
-              
-              <div className="relative z-10 text-center">
-                <div className="w-48 h-48 mx-auto mb-6 rounded-full bg-white/90 shadow-lg flex items-center justify-center overflow-hidden border-4"
-                  style={{ borderColor: selectedColor }}>
-                  <div className="w-32 h-40 rounded-t-full" style={{ backgroundColor: '#D4A574' }}>
-                    <div className="flex flex-wrap gap-1 mt-8 justify-center">
-                      {Array.from({ length: 20 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-2 rounded-full transition-all duration-500"
-                          style={{
-                            backgroundColor: selectedColor,
-                            height: `${length[0] * 1.5}px`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
-                  <Icon name="Info" size={16} />
-                  <span>3D превью модели</span>
-                </div>
-              </div>
-            </div>
+            <Model3D 
+              selectedColor={selectedColor}
+              length={length[0]}
+              dreadType={dreadType}
+              gender={gender}
+            />
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500 mb-2">Текущий выбор:</p>
-              <div className="flex items-center justify-center gap-4 text-sm font-medium">
+              <div className="flex items-center justify-center gap-4 text-sm font-medium flex-wrap">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full border-2 border-gray-300" style={{ backgroundColor: selectedColor }} />
                   <span>{colorPalette.find(c => c.value === selectedColor)?.name}</span>
@@ -87,11 +65,31 @@ const Index = () => {
                 <span>{length[0]} см</span>
                 <span>•</span>
                 <span>{dreadTypes.find(t => t.value === dreadType)?.label}</span>
+                <span>•</span>
+                <span>{gender === 'male' ? '👨 Мужчина' : '👩 Женщина'}</span>
               </div>
             </div>
           </Card>
 
           <div className="space-y-6 animate-fade-in">
+            <Card className="p-6 bg-white/80 backdrop-blur-sm shadow-xl border-2 hover:shadow-2xl transition-shadow duration-300">
+              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Icon name="Users" size={24} className="text-blue-500" />
+                Пол модели
+              </h3>
+              
+              <ToggleGroup type="single" value={gender} onValueChange={(value) => value && setGender(value as 'male' | 'female')} className="justify-start">
+                <ToggleGroupItem value="female" aria-label="Женщина" className="flex-1 data-[state=on]:bg-pink-500 data-[state=on]:text-white">
+                  <Icon name="User" size={18} className="mr-2" />
+                  Женщина
+                </ToggleGroupItem>
+                <ToggleGroupItem value="male" aria-label="Мужчина" className="flex-1 data-[state=on]:bg-blue-500 data-[state=on]:text-white">
+                  <Icon name="UserCircle" size={18} className="mr-2" />
+                  Мужчина
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </Card>
+
             <Card className="p-6 bg-white/80 backdrop-blur-sm shadow-xl border-2 hover:shadow-2xl transition-shadow duration-300">
               <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Icon name="Palette" size={24} className="text-orange-500" />
