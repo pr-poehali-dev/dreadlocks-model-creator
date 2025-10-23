@@ -89,10 +89,6 @@ const Model3D = ({ selectedColor, length, dreadType, gender }: Model3DProps) => 
     ));
   };
 
-  const getBodyWidth = () => gender === 'male' ? 'w-24' : 'w-20';
-  const getShoulderWidth = () => gender === 'male' ? 'w-32' : 'w-28';
-  const getHipWidth = () => gender === 'male' ? 'w-24' : 'w-28';
-
   const getCurrentView = () => {
     const normalizedRotation = ((rotation % 360) + 360) % 360;
     if (normalizedRotation < 45 || normalizedRotation >= 315) return 'front';
@@ -102,6 +98,76 @@ const Model3D = ({ selectedColor, length, dreadType, gender }: Model3DProps) => 
   };
 
   const currentView = getCurrentView();
+
+  const renderHumanSilhouette = () => {
+    const skinColor = '#D4A574';
+    const clothingColor = '#4A90E2';
+    const pantsColor = '#2C3E50';
+    
+    if (gender === 'female') {
+      return (
+        <svg width="140" height="450" viewBox="0 0 140 450" className="transition-all duration-500">
+          <defs>
+            <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={skinColor} />
+              <stop offset="100%" stopColor="#C49563" />
+            </linearGradient>
+          </defs>
+          
+          <ellipse cx="70" cy="35" rx="24" ry="28" fill="url(#bodyGradient)" />
+          
+          <ellipse cx="60" cy="28" rx="3" ry="4" fill="#1a1a1a" />
+          <ellipse cx="80" cy="28" rx="3" ry="4" fill="#1a1a1a" />
+          <path d="M 60 42 Q 70 45 80 42" stroke="#8B6F47" strokeWidth="1.5" fill="none" />
+          
+          <rect x="60" y="60" width="20" height="12" rx="6" fill={skinColor} />
+          
+          <path d="M 45 75 Q 70 70 95 75 L 90 130 Q 70 135 50 130 Z" fill={clothingColor} />
+          
+          <path d="M 95 75 Q 110 80 115 95 L 110 125 Q 100 122 90 125" fill={clothingColor} />
+          <path d="M 45 75 Q 30 80 25 95 L 30 125 Q 40 122 50 125" fill={clothingColor} />
+          
+          <path d="M 50 130 L 45 210 Q 45 215 50 220 L 58 360 Q 58 365 54 370 L 50 440 Q 50 445 55 448 L 62 448 Q 67 445 67 440 L 63 370 Q 62 365 63 360 L 68 220 Q 68 215 70 210 L 70 140" 
+                fill={pantsColor} />
+          <path d="M 90 130 L 95 210 Q 95 215 90 220 L 82 360 Q 82 365 86 370 L 90 440 Q 90 445 85 448 L 78 448 Q 73 445 73 440 L 77 370 Q 78 365 77 360 L 72 220 Q 72 215 70 210 L 70 140" 
+                fill={pantsColor} />
+          
+          <path d="M 50 130 Q 60 145 70 145 Q 80 145 90 130 L 85 200 Q 70 205 55 200 Z" fill={pantsColor} />
+        </svg>
+      );
+    } else {
+      return (
+        <svg width="140" height="450" viewBox="0 0 140 450" className="transition-all duration-500">
+          <defs>
+            <linearGradient id="bodyGradientMale" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={skinColor} />
+              <stop offset="100%" stopColor="#C49563" />
+            </linearGradient>
+          </defs>
+          
+          <ellipse cx="70" cy="35" rx="26" ry="30" fill="url(#bodyGradientMale)" />
+          
+          <ellipse cx="60" cy="28" rx="3" ry="4" fill="#1a1a1a" />
+          <ellipse cx="80" cy="28" rx="3" ry="4" fill="#1a1a1a" />
+          <path d="M 60 42 Q 70 44 80 42" stroke="#8B6F47" strokeWidth="1.5" fill="none" />
+          
+          <rect x="60" y="62" width="20" height="14" rx="7" fill={skinColor} />
+          
+          <path d="M 40 78 Q 70 72 100 78 L 98 145 Q 70 148 42 145 Z" fill={clothingColor} />
+          
+          <path d="M 100 78 Q 118 85 122 100 L 118 135 Q 108 132 98 138" fill={clothingColor} />
+          <path d="M 40 78 Q 22 85 18 100 L 22 135 Q 32 132 42 138" fill={clothingColor} />
+          
+          <path d="M 42 145 L 48 205 L 52 360 Q 52 365 48 370 L 46 440 Q 46 445 51 448 L 60 448 Q 65 445 65 440 L 63 370 Q 62 365 63 360 L 66 205 L 70 150" 
+                fill={pantsColor} />
+          <path d="M 98 145 L 92 205 L 88 360 Q 88 365 92 370 L 94 440 Q 94 445 89 448 L 80 448 Q 75 445 75 440 L 77 370 Q 78 365 77 360 L 74 205 L 70 150" 
+                fill={pantsColor} />
+          
+          <path d="M 42 145 Q 55 155 70 155 Q 85 155 98 145 L 94 195 Q 70 200 46 195 Z" fill={pantsColor} />
+        </svg>
+      );
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -121,50 +187,16 @@ const Model3D = ({ selectedColor, length, dreadType, gender }: Model3DProps) => 
           className="relative transition-transform duration-200"
           style={{ transform: `rotateY(${rotation}deg)`, transformStyle: 'preserve-3d' }}
         >
-          <div className="flex flex-col items-center gap-1 relative" style={{ height: '450px' }}>
-            <div className="relative mb-2">
-              <div 
-                className="w-16 h-20 rounded-full relative z-10" 
-                style={{ backgroundColor: '#D4A574' }}
-              >
-                <div className="absolute top-1/3 left-1/4 w-2 h-2 rounded-full bg-gray-800" />
-                <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-gray-800" />
-                <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-gray-700/30" />
-              </div>
-              
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-24">
-                {currentView === 'front' && renderDreads('front')}
-                {currentView === 'left' && renderDreads('left')}
-                {currentView === 'right' && renderDreads('right')}
-                {currentView === 'back' && renderDreads('back')}
-              </div>
+          <div className="relative" style={{ height: '450px' }}>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2">
+              {renderHumanSilhouette()}
             </div>
-
-            <div 
-              className="h-6 bg-gray-700 rounded-sm"
-              style={{ width: '50px' }}
-            />
-
-            <div 
-              className={`h-20 bg-gradient-to-b from-blue-400 to-blue-500 rounded-lg ${getShoulderWidth()}`}
-            />
-
-            <div 
-              className={`h-32 bg-gray-600 rounded-lg ${getBodyWidth()}`}
-            />
-
-            <div 
-              className={`h-8 bg-gray-700 rounded-sm ${getHipWidth()}`}
-            />
-
-            <div className="flex gap-2">
-              <div className="w-10 h-40 bg-blue-600 rounded-lg" />
-              <div className="w-10 h-40 bg-blue-600 rounded-lg" />
-            </div>
-
-            <div className="flex gap-2 mt-1">
-              <div className="w-8 h-12 bg-gray-800 rounded-md" />
-              <div className="w-8 h-12 bg-gray-800 rounded-md" />
+            
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32">
+              {currentView === 'front' && renderDreads('front')}
+              {currentView === 'left' && renderDreads('left')}
+              {currentView === 'right' && renderDreads('right')}
+              {currentView === 'back' && renderDreads('back')}
             </div>
           </div>
         </div>
