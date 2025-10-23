@@ -11,12 +11,16 @@ import Model3D from '@/components/Model3D';
 const colorPalette = [
   { name: 'Огненный', value: '#FF6B35' },
   { name: 'Золотой', value: '#F7931E' },
-  { name: 'Розовый', value: '#F7953E' },
+  { name: 'Коралл', value: '#FF7F50' },
   { name: 'Пурпурный', value: '#C71585' },
   { name: 'Изумруд', value: '#10B981' },
-  { name: 'Океан', value: '#8BBC6' },
+  { name: 'Океан', value: '#0EA5E9' },
   { name: 'Лаванда', value: '#C7A4FF' },
   { name: 'Черный', value: '#1F2937' },
+  { name: 'Белый', value: '#F5F5F5' },
+  { name: 'Красный', value: '#DC2626' },
+  { name: 'Синий', value: '#3B82F6' },
+  { name: 'Зеленый', value: '#22C55E' },
 ];
 
 const dreadTypes = [
@@ -96,7 +100,7 @@ const Index = () => {
                 Палитра цветов
               </h3>
               
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-3 mb-4">
                 {colorPalette.map((color) => (
                   <button
                     key={color.value}
@@ -105,19 +109,24 @@ const Index = () => {
                       selectedColor === color.value
                         ? 'ring-4 ring-orange-500 ring-offset-2 scale-105'
                         : 'hover:ring-2 hover:ring-gray-300'
-                    }`}
+                    } ${color.value === '#F5F5F5' ? 'border-2 border-gray-300' : ''}`}
                     style={{ backgroundColor: color.value }}
                   >
-                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white/90 px-2 py-1 rounded shadow-sm">
                       {color.name}
                     </span>
                     {selectedColor === color.value && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Icon name="Check" size={24} className="text-white drop-shadow-lg" />
+                        <Icon name="Check" size={24} className={color.value === '#F5F5F5' ? 'text-gray-800' : 'text-white'} style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
                       </div>
                     )}
                   </button>
                 ))}
+              </div>
+              
+              <div className="text-sm text-gray-600 flex items-center gap-2 pt-4 border-t">
+                <Icon name="Info" size={16} />
+                <span>Выбрано: <strong>{colorPalette.find(c => c.value === selectedColor)?.name}</strong></span>
               </div>
             </Card>
 
@@ -167,12 +176,38 @@ const Index = () => {
               </Select>
             </Card>
 
-            <Button 
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:from-orange-600 hover:via-pink-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <Icon name="Save" size={24} className="mr-2" />
-              Сохранить дизайн
-            </Button>
+            <div className="space-y-3">
+              <Button 
+                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:from-orange-600 hover:via-pink-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  const config = {
+                    color: colorPalette.find(c => c.value === selectedColor)?.name,
+                    length: length[0],
+                    type: dreadTypes.find(t => t.value === dreadType)?.label,
+                    gender: gender === 'male' ? 'Мужчина' : 'Женщина'
+                  };
+                  console.log('Сохранен дизайн:', config);
+                  alert(`Дизайн сохранен!\n${config.color} • ${config.length}см • ${config.type} • ${config.gender}`);
+                }}
+              >
+                <Icon name="Save" size={24} className="mr-2" />
+                Сохранить дизайн
+              </Button>
+              
+              <Button 
+                variant="outline"
+                className="w-full h-12 text-base font-semibold border-2 hover:bg-gray-50"
+                onClick={() => {
+                  setSelectedColor('#FF6B35');
+                  setLength([50]);
+                  setDreadType('classic');
+                  setGender('female');
+                }}
+              >
+                <Icon name="RotateCcw" size={20} className="mr-2" />
+                Сбросить настройки
+              </Button>
+            </div>
           </div>
         </div>
 
